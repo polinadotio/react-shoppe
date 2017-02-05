@@ -10,6 +10,8 @@ import {
   fav
 } from '../api.js';
 
+//learning Redux today!!
+
 export default class App extends Component {
   constructor(...args) {
     super(...args);

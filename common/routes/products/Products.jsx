@@ -1,89 +1,69 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
-import includes from 'lodash/includes';
-
-import Product from './Product.jsx';
-import {
-  fetchProducts,
-  addItemToCart,
-  fav,
-  favsSelector,
-  productsSelector,
-  cartSelector
-} from '../../redux';
-
-const mapStateToProps = state => {
-  const { products } = productsSelector(state);
-  const { favs } = favsSelector(state);
-  const { cart } = cartSelector(state);
-  return {
-    products: products.map(item => {
-      let newItem = { ...item };
-      if (includes(favs, item.id)) {
-        newItem.isFav = true;
-      }
-      if (includes(cart.map(({ id }) => id), item.id)) {
-        newItem.isInCart = true;
-      }
-      return newItem;
-    })
-  };
-};
-
-const actions = {
-  fetchProducts,
-  addItemToCart,
-  fav
-};
 
 const propTypes = {
-  products: PropTypes.array,
-  fetchProducts: PropTypes.func.isRequired,
-  addItemToCart: PropTypes.func.isRequired,
-  fav: PropTypes.func.isRequired
+	favs: PropTypes.array,
+	cart: PropTypes.array,
+	products: PropTypes.array,
+	user: PropTypes.object,
+	addToCart: PropTypes.func.isRequired,
+	addToFav: PropTypes.func
 };
 
-export class Products extends Component {
-  componentDidMount() {
-    this.props.fetchProducts();
-  }
-  renderProducts(products, addItemToCart, fav) {
-    if (!Array.isArray(products)) {
-      return null;
-    }
-    return products.map(item => (
-      <Product
-        addItem={ addItemToCart }
-        fav={ fav }
-        item={ item }
-        key={ item.id }
-      />
-    )
-    );
-  }
-  render() {
-    const {
-      products,
-      addItemToCart,
-      fav
-    } = this.props;
-    return (
+export default class Products extends Component {
+	render() {
+		const { addToCart, addToFav, products } = this.props;
+		return (
       <div className='products'>
         <div className='products-search'>
-          <input className='products-search_input' />
+          <input
+            onChange={ (e) => this.props.updateFilter(e.target.value) }
+            value={ this.props.filter }
+            className='products-search_input'
+          />
         </div>
-        <div className='products-lists'>
-          { this.renderProducts(products, addItemToCart, fav) }
-        </div>
+        <ul className='products-lists'>
+					{ products.map((product) => (
+            <li
+              className='products-item'
+              key={ product.id }
+            >
+              <img
+                className='products-item-stock-photo'
+                src={ `/images/products/${product.image}` }
+              />
+              <div className='products-item-name'>
+								{ product.name }
+              </div>
+              <div className='products-item-descriptions'>
+								{ product.description }
+              </div>
+              <div className='products-item-footer'>
+                <div className='products-item-cart'>
+                  <button
+                    onClick={ () => addToCart(product.id) }
+                  >
+                    <img
+                      src={
+												`/images/AddToCart${product.isInCart ? 'Selected' : 'Unselected' }.png`
+											}
+                    />
+                  </button>
+                </div>
+                <div className='products-item-favorite'>
+                  <button onClick={ () => addToFav(product.id) }>
+                    <img
+                      src={ `/images/HeartItem${product.isFav ? 'Selected' : 'Unselected' }.png`}
+                    />
+                  </button>
+                </div>
+              </div>
+            </li>
+					)) }
+        </ul>
       </div>
-    );
-  }
+		);
+	}
 }
 
 Products.displayName = 'Products';
 Products.propTypes = propTypes;
-
-export default connect(
-  mapStateToProps,
-  actions
-)(Products);

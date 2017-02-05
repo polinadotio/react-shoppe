@@ -1,55 +1,46 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-
-import { logIn } from './redux';
-
-const actions = {
-  logIn
-};
+import { browserHistory } from 'react-router';
+import { logIn } from '../api.js';
 
 const propTypes = {
-  logIn: PropTypes.func.isRequired
+	updateUser: PropTypes.func
 };
 
-export class LogIn extends React.Component {
-  render() {
-    const { logIn } = this.props;
-    return (
+export default class LogIn extends React.Component {
+	render() {
+		return (
       <div className='auth-login'>
         <form
-          name='login'
-          onSubmit={ logIn }
-          >
+          onSubmit={(e) => {
+						e.preventDefault();
+						logIn(e.target).then(user => {
+							this.props.updateUser(user);
+							browserHistory.push('/');
+						});
+					}}
+        >
           <label>
             <input
-              placeholder='Email'
               name='email'
-              type='email'
+              placeholder='email'
+              type='text'
             />
           </label>
           <label>
             <input
-              placeholder='Password'
               name='password'
+              placeholder='password'
               type='password'
             />
           </label>
-          <button
-            className='auth-signup-submit'
-            type='submit'
-            >
-            Log In
+          <button type='submit'>
+            Submit
           </button>
         </form>
       </div>
-    );
-  }
+		);
+	}
 }
 
 LogIn.displayName = 'LogIn';
 LogIn.propTypes = propTypes;
-
-export default connect(
-  null,
-  actions
-)(LogIn);

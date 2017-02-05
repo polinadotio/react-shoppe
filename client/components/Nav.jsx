@@ -1,12 +1,19 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 
 const propTypes = {
   username: PropTypes.string,
   numOfItems: PropTypes.number
 };
 
-export default class Nav extends Component {
+function mapStateToProps(state) {
+  return {
+    username: state.user.username
+  };
+}
+
+export class Nav extends Component {
   render() {
     const { username } = this.props;
     return (
@@ -57,6 +64,10 @@ export default class Nav extends Component {
     );
   }
 }
+
+export default connect(
+  mapStateToProps
+)(Nav);
 
 Nav.propTypes = propTypes;
 Nav.displayName = 'Nav';

@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { updateFilter } from '../redux.js';
 
 const propTypes = {
   favs: PropTypes.array,
@@ -12,15 +13,30 @@ const propTypes = {
 
 function mapStateToProps(state) {
   return {
-    filter: state.filter
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    updateFilter: () => dispatch({type: 'UPDATE_FILTER'})
+    filter: state.filter,
+    products: state.products.map(
+      product => {
+        const isInCart = state.cart.some(item => {
+          return item.id === product.id;
+        });
+        const isFav = state.favs.some(itemid => {
+          return itemId === product.id;
+        });
+        if (isInCart || isFav) {
+          return {
+            ...product,
+            isInCart,
+            isFav
+          };
+        }
+        return product;
+      })
   };
 }
+
+const mapDispatchToProps = {
+  updateFilter
+};
 
 //remove default key word makes products the named export
 export class Products extends Component {
@@ -80,8 +96,13 @@ export class Products extends Component {
 }
 
 //this looks funky, we're passing in the second function returned with Products, wild;
-const ConnectedProducts = connect(mapStateToProps, mapDispatchToProps)(Products);
-export default ConnectedProducts;
+// const ConnectedProducts = connect(mapStateToProps, mapDispatchToProps)(Products);
+// export default ConnectedProducts;
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Products);
 
 Products.displayName = 'Products';
 Products.propTypes = propTypes;

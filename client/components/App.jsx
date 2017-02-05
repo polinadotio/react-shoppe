@@ -10,8 +10,6 @@ import {
   fav
 } from '../api.js';
 
-//learning Redux today!!
-
 export default class App extends Component {
   constructor(...args) {
     super(...args);
@@ -20,15 +18,13 @@ export default class App extends Component {
       products: [],
       accessToken: null,
       cart: [],
-      favs: [],
-      filter: ''
+      favs: []
     };
     this.updateUser = this.updateUser.bind(this);
     this.addToCart = this.addToCart.bind(this);
     this.addToFav = this.addToFav.bind(this);
     this.removeFromCart = this.removeFromCart.bind(this);
     this.deleteFromCart = this.deleteFromCart.bind(this);
-    this.updateFilter = this.updateFilter.bind(this);
   }
 
   componentDidMount() {
@@ -96,10 +92,6 @@ export default class App extends Component {
       .then(({ favs }) => this.setState({ favs }));
   }
 
-  updateFilter(filter) {
-    this.setState({ filter: filter.replace('e', 'f') });
-  }
-
   render() {
     return (
       <div className='app'>
@@ -107,7 +99,6 @@ export default class App extends Component {
         <div className='app-child'>
           {
             cloneElement(this.props.children, {
-              filter: this.state.filter,
               updateUser: this.updateUser,
               addProducts: this.addProducts,
               products: this.state.products
@@ -132,7 +123,6 @@ export default class App extends Component {
               addToFav: this.addToFav,
               removeFromCart: this.removeFromCart,
               deleteFromCart: this.deleteFromCart,
-              updateFilter: this.updateFilter,
               cart: this.state.cart.map(item => {
                 const productIndex = _.findIndex(this.state.products, (product) => {
                   return product.id === item.id;

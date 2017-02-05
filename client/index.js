@@ -8,14 +8,18 @@ import routes from './routes.jsx';
 
 //first step: create a very basic reducer
 const initialState = {
-	count: 0,
-	openModal: true
+	user: {},
+	products: [],
+	accessToken: null,
+	cart: [],
+	favs: [],
+	filter: ''
 };
 
 function reducer(state = initialState, action) {
 	console.log('called');
-	if (action.type == 'INC') {
-		return Object.assign({}, state, { count: state.count + 1});
+	if (action.type == 'UPDATE_FILTER') {
+		return Object.assign({}, state, { filter: action.reload });
 	}
 	return state;
 }

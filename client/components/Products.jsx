@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 const propTypes = {
   favs: PropTypes.array,
@@ -9,7 +10,20 @@ const propTypes = {
   addToFav: PropTypes.func
 };
 
-export default class Products extends Component {
+function mapStateToProps(state) {
+  return {
+    filter: state.filter
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateFilter: () => dispatch({type: 'UPDATE_FILTER'})
+  };
+}
+
+//remove default key word makes products the named export
+export class Products extends Component {
   render() {
     const { addToCart, addToFav, products } = this.props;
     return (
@@ -64,6 +78,10 @@ export default class Products extends Component {
     );
   }
 }
+
+//this looks funky, we're passing in the second function returned with Products, wild;
+const ConnectedProducts = connect(mapStateToProps, mapDispatchToProps)(Products);
+export default ConnectedProducts;
 
 Products.displayName = 'Products';
 Products.propTypes = propTypes;

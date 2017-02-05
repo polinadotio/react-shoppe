@@ -5,7 +5,7 @@ const propTypes = {
   cart: PropTypes.array,
   products: PropTypes.array,
   user: PropTypes.object,
-  addToCart: PropTypes.func.isRequired,
+  addToCart: PropTypes.func,//you can mark as .isRequired
   addToFav: PropTypes.func
 };
 
